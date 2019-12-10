@@ -41,20 +41,20 @@ public class HTMLDiffer implements Differ{
 
     public void diff(TextNodeComparator ancestorComparator, TextNodeComparator leftComparator,
     		TextNodeComparator rightComparator) throws SAXException {
-    	
+
         LCSSettings settings = new LCSSettings();
         settings.setUseGreedyMethod(false);
         // settings.setPowLimit(1.5);
         // settings.setTooLong(100000*100000);
     	org.eclipse.compare.rangedifferencer.RangeDifference[] differences = RangeDifferencer.findDifferences(settings, ancestorComparator, leftComparator, rightComparator);
-    	
+
     	List<RangeDifference> pdifferences = preProcess(differences);
-    	
+
     	int currentIndexAncestor = 0;
     	int currentIndexLeft = 0;
     	int currentIndexRight = 0;
     	for (RangeDifference d : pdifferences) {
-    		
+
     		int tempKind = d.kind();
     		if (tempKind == RangeDifference.ANCESTOR) {
     			// ignore, we won't show pseudo-conflicts currently (left and right have the same change)
@@ -71,7 +71,7 @@ public class HTMLDiffer implements Differ{
     						.rightStart(), currentIndexAncestor, d.ancestorStart(),
     						rightComparator);
     			}
-			
+
     		if (tempKind == RangeDifference.CONFLICT || tempKind == RangeDifference.LEFT) {
     			// conflicts and changes on the left side
                 if (d.leftLength() > 0) {
@@ -88,7 +88,7 @@ public class HTMLDiffer implements Differ{
                 }
     		}
                 ancestorComparator.markAsNew(d.ancestorStart(), d.ancestorEnd(), ModificationType.REMOVED);
-    		
+
     		currentIndexAncestor = d.ancestorEnd();
     		currentIndexLeft = d.leftEnd();
     		currentIndexRight = d.rightEnd();
@@ -103,11 +103,11 @@ public class HTMLDiffer implements Differ{
     				rightComparator.getRangeCount(), currentIndexAncestor,
     				ancestorComparator.getRangeCount(), rightComparator);
     	}
-    	
+
     	ancestorComparator.expandWhiteSpace();
     	output.generateOutput(ancestorComparator.getBodyNode());
     }
-    
+
     /**
      * {@inheritDoc}
      */
